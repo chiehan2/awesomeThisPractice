@@ -1,2 +1,2 @@
-# davidAwesomeThisPractice
-201602
+# awesomeThisPractice
+homework assigned by David 201602
