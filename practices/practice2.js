@@ -39,37 +39,22 @@ search.prototype.matchWords = function (opt) {
       matchedIndexes.push(i);
   	};
   };
-  this.matchedWords = matchedWords;
+  this.matchedWords = matchedWords; 
   this.matchedIndexes = matchedIndexes;
   console.log(matchedWords);
   return this;
 };
 
-search.prototype.showExplanation = function() {
-  if (!this.matchedIndexes) {
-  	console.log('not search yet');
-  	return this;
-  };
-  for (var i = 0; i < this.matchedIndexes.length; i ++) {
-  	var index = this.matchedIndexes[i];
-  	console.log(dictionary[index]);
-  };
-  return this;
-}
-
 var a = new search('a');
-var b = new search('b');
-
-a.matchWords('head').matchWords('whole').matchWords('any').showExplanation();
-b.showExplanation();
 
 ///////////////////////    call and apply
 
-a.matchWords('any');
+a.matchWords('any'); //    ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba'] 
 
 function doubleSearch () {};
 
-doubleSearch.prototype.doubleMatchWords = function(secondKeyword) {
+doubleSearch.prototype.doubleMatchWords = function(secondKeyword) { 
+    // 以 keyword 'a' 的結果為基礎，輸入第二個 keyword 'b'
   var doubleMatchedWords = [];
   var reverseDoubleMatchIndexes = [];
   var firstMatchedWords = this.matchedWords;
@@ -82,13 +67,14 @@ doubleSearch.prototype.doubleMatchWords = function(secondKeyword) {
       reverseDoubleMatchIndexes.push(i);
     };
   };
+  console.log(doubleMatchedWords);    // ['ab', 'ba'], 有 'a' 和 'b' 的詞條
   this.reverseDoubleMatchIndexes = reverseDoubleMatchIndexes;
-  console.log(doubleMatchedWords);
+      // 記下 ['ab', 'ba'] 在 ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba'] 的位置
   return this;
 };
 
 var ab = new doubleSearch();
-ab.doubleMatchWords.call(a, 'b');
+ab.doubleMatchWords.call(a, 'b');  
 
 doubleSearch.prototype.explainReverseDoubleMatch = function(firstKeyword, secondKeyword) {
   this.reverseDoubleMatchIndexes.sort(function(a, b) {
@@ -99,7 +85,7 @@ doubleSearch.prototype.explainReverseDoubleMatch = function(firstKeyword, second
     reverseDoubleMatchWords.splice(this.reverseDoubleMatchIndexes[i], 1);
   };
   console.log('The results of reverseDoubleMatchWords is : \n' 
-    + reverseDoubleMatchWords 
+    + reverseDoubleMatchWords    // a,ac,ad,ae,af ag,ah ai aj 是有 'a' 但沒有 'b' 的詞條
     + ', \nit means the words in the dictionary which match ' + firstKeyword 
     + ', but not match ' + secondKeyword + ' !');
 };

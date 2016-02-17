@@ -22,13 +22,13 @@ function search (input) {
 search.prototype.matchWords = function (opt) {
   var matchedWords = [];
   var matchedIndexes = [];
-  if (opt === 'head') {
+  if (opt === 'head') {    // 從詞條的字首開始比對
   	var regex = new RegExp('^' + this.keyword);
   };
-  if (opt === 'any') {
+  if (opt === 'any') {    // 比對詞條的任意部分
   	var regex = new RegExp(this.keyword);
   }; 
-  if (opt === 'whole') {
+  if (opt === 'whole') {    // 完全符合磁條
   	var regex = new RegExp('^' + this.keyword + '$')
   };
   for (i = 0; i < dictionary.length; i ++) {
@@ -39,8 +39,8 @@ search.prototype.matchWords = function (opt) {
       matchedIndexes.push(i);
   	};
   };
-  this.matchedWords = matchedWords;
-  this.matchedIndexes = matchedIndexes;
+  this.matchedWords = matchedWords;    // 定義符合搜尋條件的詞條
+  this.matchedIndexes = matchedIndexes;    // 定義這些符合的詞條在字典的位置
   console.log(matchedWords);
   return this;
 };
@@ -50,7 +50,7 @@ search.prototype.showExplanation = function() {
   	console.log('not search yet');
   	return this;
   };
-  for (var i = 0; i < this.matchedIndexes.length; i ++) {
+  for (var i = 0; i < this.matchedIndexes.length; i ++) {    // 利用之前存的 indexes 到字典 json 撈資料
   	var index = this.matchedIndexes[i];
   	console.log(dictionary[index]);
   };
