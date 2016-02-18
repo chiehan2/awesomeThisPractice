@@ -51,12 +51,12 @@ ConsultDict.prototype.matchWords = function (keyword, matchType) {
 ConsultDict.prototype.showExplanation = function() {
   if (!this.matchedIndexes) {
     console.log('not search yet');
-    return this;
   }
-
-  this.matchedIndexes.forEach(function(index) {
-    console.log(this.dictionary[index]);
-  }.bind(this));    // 利用之前存的 indexes 到字典 json 撈資料
+  else {
+    this.matchedIndexes.forEach(function(index) {
+      console.log(this.dictionary[index]);
+    }.bind(this));    // 利用之前存的 indexes 到字典 json 撈資料
+  }
   return this;
 };
 

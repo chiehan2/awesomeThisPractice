@@ -26,13 +26,6 @@ function matchWord (wordInformation) {
   }
 }
 
-function matchIndex (wordInformation, index) {
-  var word = wordInformation[0];
-  if (word.match(this.regex)) {
-    return index;
-  }
-}
-
 function filterUndefined (value) {
   return undefined !== value;
 }
@@ -42,7 +35,6 @@ ConsultDict.prototype.matchWords = function (keyword, matchType) {
   this.regex = new RegExp(matchType[0] + this.keyword + matchType[1]);
 
   this.matchedWords = this.dictionary.map(matchWord.bind(this)).filter(filterUndefined);    // 定義符合搜尋條件的詞條
-  this.matchedIndexes = this.dictionary.map(matchIndex.bind(this)).filter(filterUndefined);    // 定義這些符合的詞條在字典的位置
 
   console.log(this.matchedWords);
   return this;
