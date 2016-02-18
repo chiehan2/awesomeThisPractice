@@ -44,7 +44,7 @@ var consultEnglishDict = new ConsultDict(englishDict);
 
 ///////////////////////    call and apply
 
-consultEnglishDict.matchWords('a', ['','']); //    ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba'] 
+consultEnglishDict.matchWords('a', ['','']); //    ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba']
 
 function DoubleConsultDict () {}
 
@@ -75,7 +75,7 @@ DoubleConsultDict.prototype.doubleMatchWords = function(secondKeyword) {
 };
 
 var doubleConsultDict = new DoubleConsultDict();
-doubleConsultDict.doubleMatchWords.call(consultEnglishDict, 'b');  
+doubleConsultDict.doubleMatchWords.call(consultEnglishDict, 'b');
 
 DoubleConsultDict.prototype.explainReverseDoubleMatch = function(firstKeyword, secondKeyword) {
   this.doubleMatchedIndexes.sort(function(a, b) {
