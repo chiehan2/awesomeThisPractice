@@ -1,4 +1,4 @@
-var dictionary = [
+var englishDict = [
   ['a', 'a\'s explanation'],
   ['ab', 'ab\'s explanation'],
   ['ac', 'ac\'s explanation'],
@@ -15,79 +15,88 @@ var dictionary = [
   ['bh bi bj', 'bh bi bj\'s explanation']
 ];
 
-function search (input) {
-  this.keyword = input;
-};
+function ConsultDict (dictionary) {
+  this.dictionary = dictionary;
+}
 
-search.prototype.matchWords = function (opt) {
-  var matchedWords = [];
-  var matchedIndexes = [];
-  if (opt === 'head') {
-  	var regex = new RegExp('^' + this.keyword);
-  };
-  if (opt === 'any') {
-  	var regex = new RegExp(this.keyword);
-  }; 
-  if (opt === 'whole') {
-  	var regex = new RegExp('^' + this.keyword + '$')
-  };
-  for (i = 0; i < dictionary.length; i ++) {
-  	var word = dictionary[i][0];
-  	var matchedWord = word.match(regex);
-  	if (matchedWord) {
-      matchedWords.push(word);
-      matchedIndexes.push(i);
-  	};
-  };
-  this.matchedWords = matchedWords; 
-  this.matchedIndexes = matchedIndexes;
-  console.log(matchedWords);
+function matchWord (wordInformation) {
+  var word = wordInformation[0];
+  if (word.match(this.regex)) {
+    return word;
+  }
+}
+
+function matchIndex (wordInformation, index) {
+  var word = wordInformation[0];
+  if (word.match(this.regex)) {
+    return index;
+  }
+}
+
+function filterUndefined (value) {
+  return undefined !== value;
+}
+
+ConsultDict.prototype.matchWords = function (keyword, matchType) {
+  this.keyword = keyword;
+  this.regex = new RegExp(matchType[0] + this.keyword + matchType[1]);
+
+  this.matchedWords = this.dictionary.map(matchWord.bind(this)).filter(filterUndefined);    // 定義符合搜尋條件的詞條
+  this.matchedIndexes = this.dictionary.map(matchIndex.bind(this)).filter(filterUndefined);    // 定義這些符合的詞條在字典的位置
+
+  console.log(this.matchedWords);
   return this;
 };
 
-var a = new search('a');
+var consultEnglishDict = new ConsultDict(englishDict);
 
 ///////////////////////    call and apply
 
-a.matchWords('any'); //    ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba'] 
+consultEnglishDict.matchWords('a', ['','']); //    ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba'] 
 
-function doubleSearch () {};
+function DoubleConsultDict () {}
 
-doubleSearch.prototype.doubleMatchWords = function(secondKeyword) { 
+function doubleMatchWord (word) {
+  if (word.match(this.secondKeyword)) {
+    return word;
+  }
+}
+
+function doubleMatchIndex (word, index) {
+  if (word.match(this.secondKeyword)) {
+    return index;
+  }
+}
+
+DoubleConsultDict.prototype.doubleMatchWords = function(secondKeyword) {
     // 以 keyword 'a' 的結果為基礎，輸入第二個 keyword 'b'
-  var doubleMatchedWords = [];
-  var reverseDoubleMatchIndexes = [];
-  var firstMatchedWords = this.matchedWords;
-  var regex = new RegExp(secondKeyword);
-  for (i = 0; i < firstMatchedWords.length; i ++) {    
-    var word = firstMatchedWords[i];
-    var doubleMatchedWord = word.match(regex);
-    if (doubleMatchedWord) {
-      doubleMatchedWords.push(word);
-      reverseDoubleMatchIndexes.push(i);
-    };
-  };
-  console.log(doubleMatchedWords);    // ['ab', 'ba'], 有 'a' 和 'b' 的詞條
-  this.reverseDoubleMatchIndexes = reverseDoubleMatchIndexes;
-      // 記下 ['ab', 'ba'] 在 ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba'] 的位置
+  this.secondKeyword = secondKeyword;
+  this.firstMatchedWords = this.matchedWords;
+
+  this.doubleMatchedWords = this.firstMatchedWords.map(doubleMatchWord.bind(this)).filter(filterUndefined);
+  this.doubleMatchedIndexes = this.firstMatchedWords.map(doubleMatchIndex.bind(this)).filter(filterUndefined);
+
+  console.log(this.doubleMatchedWords);    // ['ab', 'ba'], 有 'a' 和 'b' 的詞條
+  console.log(this.doubleMatchedIndexes);
+      // ['ab', 'ba'] 在 ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba'] 的位置
   return this;
 };
 
-var ab = new doubleSearch();
-ab.doubleMatchWords.call(a, 'b');  
+var doubleConsultDict = new DoubleConsultDict();
+doubleConsultDict.doubleMatchWords.call(consultEnglishDict, 'b');  
 
-doubleSearch.prototype.explainReverseDoubleMatch = function(firstKeyword, secondKeyword) {
-  this.reverseDoubleMatchIndexes.sort(function(a, b) {
+DoubleConsultDict.prototype.explainReverseDoubleMatch = function(firstKeyword, secondKeyword) {
+  this.doubleMatchedIndexes.sort(function(a, b) {
     return b - a;
   });
-  var reverseDoubleMatchWords = this.matchedWords;
-  for (var i = 0; i < this.reverseDoubleMatchIndexes.length; i ++) {
-    reverseDoubleMatchWords.splice(this.reverseDoubleMatchIndexes[i], 1);
-  };
-  console.log('The results of reverseDoubleMatchWords is : \n' 
-    + reverseDoubleMatchWords    // a,ac,ad,ae,af ag,ah ai aj 是有 'a' 但沒有 'b' 的詞條
-    + ', \nit means the words in the dictionary which match ' + firstKeyword 
-    + ', but not match ' + secondKeyword + ' !');
+
+  var reverseDoubleMatchWords = this.firstMatchedWords;
+  this.doubleMatchedIndexes.map(function(index) {
+    reverseDoubleMatchWords.splice(index, 1);
+  });    // reverseDoubleMatchWords : a,ac,ad,ae,af ag,ah ai aj; 是有 'a' 但沒有 'b' 的詞條
+
+  console.log('The results of reverseDoubleMatchWords is : \n' + reverseDoubleMatchWords +
+    ', \nit means the words in the dictionary which match ' + firstKeyword + ', but not match ' + secondKeyword + ' !');
 };
 
-ab.explainReverseDoubleMatch.apply(a, ['a', 'b']);
+doubleConsultDict.explainReverseDoubleMatch.apply(consultEnglishDict, ['a', 'b']);

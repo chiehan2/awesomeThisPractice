@@ -1,4 +1,4 @@
-var dictionary = [
+var englishDict = [
   ['a', 'a\'s explanation'],
   ['ab', 'ab\'s explanation'],
   ['ac', 'ac\'s explanation'],
@@ -15,50 +15,50 @@ var dictionary = [
   ['bh bi bj', 'bh bi bj\'s explanation']
 ];
 
-function search (input) {
-  this.keyword = input;
-};
-
-search.prototype.matchWords = function (opt) {
-  var matchedWords = [];
-  var matchedIndexes = [];
-  if (opt === 'head') {    // 從詞條的字首開始比對
-  	var regex = new RegExp('^' + this.keyword);
-  };
-  if (opt === 'any') {    // 比對詞條的任意部分
-  	var regex = new RegExp(this.keyword);
-  }; 
-  if (opt === 'whole') {    // 完全符合磁條
-  	var regex = new RegExp('^' + this.keyword + '$')
-  };
-  for (i = 0; i < dictionary.length; i ++) {
-  	var word = dictionary[i][0];
-  	var matchedWord = word.match(regex);
-  	if (matchedWord) {
-      matchedWords.push(word);
-      matchedIndexes.push(i);
-  	};
-  };
-  this.matchedWords = matchedWords;    // 定義符合搜尋條件的詞條
-  this.matchedIndexes = matchedIndexes;    // 定義這些符合的詞條在字典的位置
-  console.log(matchedWords);
-  return this;
-};
-
-search.prototype.showExplanation = function() {
-  if (!this.matchedIndexes) {
-  	console.log('not search yet');
-  	return this;
-  };
-  for (var i = 0; i < this.matchedIndexes.length; i ++) {    // 利用之前存的 indexes 到字典 json 撈資料
-  	var index = this.matchedIndexes[i];
-  	console.log(dictionary[index]);
-  };
-  return this;
+function ConsultDict (dictionary) {
+  this.dictionary = dictionary;
 }
 
-var a = new search('a');
-var b = new search('b');
+function matchWord (wordInformation) {
+  var word = wordInformation[0];
+  if (word.match(this.regex)) {
+    return word;
+  }
+}
 
-a.matchWords('head').matchWords('any').matchWords('whole').showExplanation();
-b.showExplanation();
+function matchIndex (wordInformation, index) {
+  var word = wordInformation[0];
+  if (word.match(this.regex)) {
+    return index;
+  }
+}
+
+function filterUndefined (value) {
+  return undefined !== value;
+}
+
+ConsultDict.prototype.matchWords = function (keyword, matchType) {
+  this.keyword = keyword;
+  this.regex = new RegExp(matchType[0] + this.keyword + matchType[1]);
+
+  this.matchedWords = this.dictionary.map(matchWord.bind(this)).filter(filterUndefined);    // 定義符合搜尋條件的詞條
+  this.matchedIndexes = this.dictionary.map(matchIndex.bind(this)).filter(filterUndefined);    // 定義這些符合的詞條在字典的位置
+
+  console.log(this.matchedWords);
+  return this;
+};
+
+ConsultDict.prototype.showExplanation = function() {
+  if (!this.matchedIndexes) {
+    console.log('not search yet');
+    return this;
+  }
+
+  this.matchedIndexes.forEach(function(index) {
+    console.log(this.dictionary[index]);
+  }.bind(this));    // 利用之前存的 indexes 到字典 json 撈資料
+  return this;
+};
+
+var consultEnglishDict = new ConsultDict(englishDict);
+consultEnglishDict.matchWords('a', ['','']).showExplanation().matchWords("b", ['^', '$']).showExplanation();
