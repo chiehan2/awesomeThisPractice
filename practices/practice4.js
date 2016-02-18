@@ -15,22 +15,22 @@ var englishDict = [
   ['bh bi bj', 'bh bi bj\'s explanation']
 ];
 
-function ConsultDict (dictionary) {
+function ConsultDict(dictionary) {
   this.dictionary = dictionary;
 }
 
-function matchWord (wordInformation) {
+function matchWord(wordInformation) {
   var word = wordInformation[0];
   if (word.match(this.regex)) {
     return word;
   }
 }
 
-function filterUndefined (value) {
+function filterUndefined(value) {
   return undefined !== value;
 }
 
-ConsultDict.prototype.matchWords = function (keyword, matchType) {
+ConsultDict.prototype.matchWords = function(keyword, matchType) {
   this.keyword = keyword;
   this.regex = new RegExp(matchType[0] + this.keyword + matchType[1]);
 
@@ -46,15 +46,15 @@ var consultEnglishDict = new ConsultDict(englishDict);
 
 consultEnglishDict.matchWords('a', ['','']); //    ['a', 'ab', 'ac', 'ad', 'ae', 'af ag', 'ah ai aj', 'ba']
 
-function DoubleConsultDict () {}
+function DoubleConsultDict() {}
 
-function doubleMatchWord (word) {
+function doubleMatchWord(word) {
   if (word.match(this.secondKeyword)) {
     return word;
   }
 }
 
-function doubleMatchIndex (word, index) {
+function doubleMatchIndex(word, index) {
   if (word.match(this.secondKeyword)) {
     return index;
   }
